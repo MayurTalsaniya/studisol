@@ -49,12 +49,57 @@ elseif($pass != $cpass) {
   echo "Passwords doesn't match, please check your password..........";
 }
 else{
+
   $hash = password_hash($pass, PASSWORD_BCRYPT);
         $sql = "INSERT INTO student_user (fullname,city,enrollment,college,course,branch,sem,mobile_no,email,pass)
          VALUES ('$fullname', '$city','$enroll','$college','$course','$branch','$sem','$mobile','$email_1','$hash')";
         $result = mysqli_query($con, $sql);
-        header('location: login.html');
+        //header('location: login.html');
 }
+
+$last_id = mysqli_insert_id($con);
+$targetDirectory = "../IDimages/";
+$name = $_POST["FullName"];
+$targetFile = $targetDirectory . basename($_FILES["fileToUpload"]["name"]);
+$uploadOk = 1;
+$imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+$filename = $_FILES["fileToUpload"]["tmp_name"];
+
+// Check if image file is a actual image or fake image
+$check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+if ($check !== false) {
+    $uploadOk = 1;
+} else {
+    echo "File is not an image.";
+    $uploadOk = 0;
+}
+
+// Check file size
+if ($_FILES["fileToUpload"]["size"] > 500000) {
+    echo "Sorry, your file is too large.";
+    $uploadOk = 0;
+}
+
+// Allow certain file formats
+if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
+    echo "Sorry, only JPG, JPEG & PNG files are allowed.";
+    $uploadOk = 0;
+}
+
+// Check if $uploadOk is set to 0 by an error
+if ($uploadOk == 0) {
+    echo "Sorry, your file was not uploaded.";
+// if everything is ok, try to upload file
+} else {
+    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $targetFile)) {
+        echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
+        // update the database with the file path of the uploaded photo
+        mysqli_query($con,"UPDATE student_user SET id_img='$filename' where student_user_id='$last_id'") or die(mysqli_error($con));
+    } else {
+        echo "Sorry, there was an error uploading your file.";
+    }
+}
+
 }
 ?>
 
@@ -72,7 +117,7 @@ else{
    </head>
 <body>
     <div class="main">
-      <form action="RegisterStudent.php" method="post">
+      <form action="RegisterStudent.php" method="post" enctype="multipart/form-data">
         <div class="div-1">
           <div class="div-2">
             <h2>Sign Up as a Student</h2>
@@ -86,7 +131,8 @@ else{
               class="input"
               placeholder="Full Name"
               id="fullname"
-              name="FullName"
+              name="FullName" 
+              required
             />
           </div>
           <div class="div-3">
@@ -99,6 +145,7 @@ else{
               placeholder="Current city"
               id="city"
               name="City"
+              required
             />
           </div>
           <div class="div-3">
@@ -111,6 +158,7 @@ else{
               placeholder="Enrollment/Roll"
               id="enr"
               name="EnRoll"
+              required
             />
           </div>
           <div class="div-3">
@@ -123,6 +171,7 @@ else{
               placeholder="College/School name"
               id="college"
               name="College"
+              required
             />
           </div>
           <div class="div-3">
@@ -135,6 +184,7 @@ else{
               placeholder="Ex. B.E , B.Com , MBA"
               id="course"
               name="Course"
+              required
             />
           </div>
           <div class="div-3">
@@ -147,6 +197,7 @@ else{
               placeholder="Ex. Computer Engineering, HR, Finance"
               id="branch"
               name="Branch"
+              required
             />
           </div>
           <div class="div-3">
@@ -161,6 +212,7 @@ else{
               name="Sem"
               min="1" 
               max="12"
+              required
             />
           </div>
           <div class="div-3">
@@ -173,6 +225,7 @@ else{
               placeholder="Mobile number"
               id="mobile"
               name="Mobile"
+              required
             />
           </div>
           <div class="div-3">
@@ -185,6 +238,7 @@ else{
               placeholder="Email address"
               name="email_1"
               id="email_1"
+              required
             />
           </div>
           <div class="div-3">
@@ -197,6 +251,7 @@ else{
               placeholder="Password"
               name="pass"
               id="pass"
+              required
             />
           </div>
           <div class="div-3">
@@ -209,6 +264,20 @@ else{
               placeholder="Confirm password"
               id="cpass"
               name="Cpass"
+              required
+            />
+          </div>
+          <div class="div-3">
+            <div class="div-h3">
+              <h5>Upload School/College ID card :</h5>
+            </div>
+            <input 
+              type="file"
+              class="input"
+              id="fileToUpload"
+              name="fileToUpload"
+              accept="image/*"
+              required
             />
           </div>
           <p id="message"></p>
@@ -219,7 +288,7 @@ else{
           <div class="div-6">
             <p>
               Already have an account with us?
-              <a href="Login.html" style="text-decoration:none"><span id="login">Log In</span></a>
+              <a href="Login.php" style="text-decoration:none"><span id="login">Log In</span></a>
             </p>
           </div>
         </div>

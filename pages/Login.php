@@ -50,7 +50,7 @@
               Don't have an account with StudiSol?<br><br>
               <a href="RegisterStudent.php" style="text-decoration:none"><span id="signupstud"> Sign up as a Student</span></a>
               <br><br>
-              <a href="Register.html" style="text-decoration:none"><span id="signup"> Sign up as a Viewer</span></a>
+              <a href="Register.php" style="text-decoration:none"><span id="signup"> Sign up as a Viewer</span></a>
             </p>
           </div>
         </div>

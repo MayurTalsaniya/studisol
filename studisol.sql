@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 07, 2024 at 08:35 PM
+-- Generation Time: Apr 12, 2024 at 07:03 PM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 8.0.3
 
@@ -39,8 +39,17 @@ CREATE TABLE `student_user` (
   `mobile_no` decimal(10,0) NOT NULL,
   `email` varchar(50) NOT NULL,
   `pass` varchar(300) NOT NULL,
-  `created_at` datetime NOT NULL
+  `created_at` datetime DEFAULT current_timestamp(),
+  `id_img` varchar(250) NOT NULL,
+  `isVerified` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `student_user`
+--
+
+INSERT INTO `student_user` (`student_user_id`, `fullname`, `city`, `enrollment`, `college`, `course`, `branch`, `sem`, `mobile_no`, `email`, `pass`, `created_at`, `id_img`, `isVerified`) VALUES
+(2, 'Mayur Talsaniya ', 'Rajkot', '220043131003', 'B. H. Gardi', 'B.E.', 'CSE', '6', '9408124385', 'mayurtalsaniya@hotmail.com', '$2y$10$A518Xnl6Zwh3BvjH3iAAsuOegTsi4az1pr8WEYHlRDCuaQ7ZctQ2K', '2024-04-11 23:16:11', '', 0);
 
 --
 -- Indexes for dumped tables
@@ -63,7 +72,7 @@ ALTER TABLE `student_user`
 -- AUTO_INCREMENT for table `student_user`
 --
 ALTER TABLE `student_user`
-  MODIFY `student_user_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `student_user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

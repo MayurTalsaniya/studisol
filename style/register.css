@@ -69,6 +69,7 @@
     height: 35px;
     cursor: pointer;
   }
+
   .div-6 {
     display: flex;
     justify-content: center;
@@ -76,7 +77,7 @@
     margin-top: 20px;
     margin-bottom: 10px;
   }
-  #login {
+  #login{
     color: #4383e4;
     cursor: pointer;
   }
