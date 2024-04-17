@@ -10,15 +10,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $branch = $_POST["Branch"];
     $sem = $_POST["Sem"];
     $mobile = $_POST["Mobile"];
-    $email_1 = $_POST["email_1"];
-    $pass = $_POST["pass"];
+    $email = $_POST["email"];
+    $pass = $_POST["passwd"];
     $cpass = $_POST["Cpass"];
 
 
 
    // Function to check if email is already registered
-function isEmailRegistered($email_1, $con) {
-  $sql = "SELECT * FROM student_user WHERE email = '$email_1'";
+function isEmailRegistered($email, $con) {
+  $sql = "SELECT * FROM student_user WHERE email = '$email'";
   $result = $con->query($sql);
   return $result->num_rows > 0;
 }
@@ -36,7 +36,7 @@ function isEnrollmentNumberRegistered($enroll, $con) {
   return $result->num_rows > 0;
 }
 
-if (isEmailRegistered($email_1, $con)) {
+if (isEmailRegistered($email, $con)) {
   echo "This email is already registered.";
 }
 elseif (isMobileNumberRegistered($mobile, $con)) {
@@ -51,10 +51,9 @@ elseif($pass != $cpass) {
 else{
 
   $hash = password_hash($pass, PASSWORD_BCRYPT);
-        $sql = "INSERT INTO student_user (fullname,city,enrollment,college,course,branch,sem,mobile_no,email,pass)
-         VALUES ('$fullname', '$city','$enroll','$college','$course','$branch','$sem','$mobile','$email_1','$hash')";
+        $sql = "INSERT INTO student_user (fullname,city,enrollment,college,course,branch,sem,mobile_no,email,passwd)
+         VALUES ('$fullname', '$city','$enroll','$college','$course','$branch','$sem','$mobile','$email','$hash')";
         $result = mysqli_query($con, $sql);
-        //header('location: login.html');
 }
 
 $last_id = mysqli_insert_id($con);
@@ -95,6 +94,7 @@ if ($uploadOk == 0) {
         echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
         // update the database with the file path of the uploaded photo
         mysqli_query($con,"UPDATE student_user SET id_img='$filename' where student_user_id='$last_id'") or die(mysqli_error($con));
+        header('location: Login.php');
     } else {
         echo "Sorry, there was an error uploading your file.";
     }
@@ -236,8 +236,8 @@ if ($uploadOk == 0) {
               type="email"
               class="input"
               placeholder="Email address"
-              name="email_1"
-              id="email_1"
+              name="email"
+              id="email"
               required
             />
           </div>
@@ -249,8 +249,8 @@ if ($uploadOk == 0) {
               type="password"
               class="input"
               placeholder="Password"
-              name="pass"
-              id="pass"
+              name="passwd"
+              id="passwd"
               required
             />
           </div>

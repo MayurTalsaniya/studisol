@@ -2,7 +2,7 @@
 $err = false;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     include 'dbconnect.php';
-    $fname = $_POST["fname"];
+    $fullname = $_POST["fname"];
     $lname = $_POST["lname"];
     $mobileno = $_POST["mobileno"];
     $email = $_POST["email"];
@@ -32,7 +32,7 @@ function isMobileNumberRegistered($mobileno, $con) {
   else{
 
     $hash = password_hash($passwd, PASSWORD_BCRYPT);
-          $sql = "INSERT INTO user (fname,lname,mobileno,email,passwd)
+          $sql = "INSERT INTO user (fullname,lname,mobileno,email,passwd)
            VALUES ('$fname', '$lname','$mobileno','$email','$hash')";
           $result = mysqli_query($con, $sql);
           header('location: login.php');
@@ -146,10 +146,6 @@ function isMobileNumberRegistered($mobileno, $con) {
             </p>
           </div>
         </div>
-      </div>
-
-
-      <script src="../js/register.js"></script>
-  
+      </div>  
 </body>
 </html>
