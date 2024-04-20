@@ -51,17 +51,17 @@
     margin-left: 5px;
     margin-top: 5px;
   }
-  .rdbtn{
+  /*.role{
     margin-top: 15px;
     margin-bottom: 15px;
     display: flex;
     gap: 8px;
     align-items: center;
   }
-  .rdbtn h4 {
+  .role h4 {
     margin: 0; 
     margin-right: 5px;
-  }
+  }*/
   .div-h3 {
     margin-bottom: 2px;
   }

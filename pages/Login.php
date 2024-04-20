@@ -2,28 +2,38 @@
 include 'dbconnect.php';
     $login=false;
     $user=false;
+
+    //var_dump($_POST);
     if(isset($_POST['submit']))
     {
-      if($_POST["user_type"]=="student"){
-        $user = "student_user";
-      }
-      else{
-        $user = "user";
-      }
+      $dropDownVal = $_POST["role"];
+      switch ($dropDownVal) {
+        case "Student":
+            $user = "student_user"; // Replace with actual student table name
+            break;
+        case "Viewer":
+            $user = "user"; // Replace with actual faculty table name
+            break;
+        default:
+            echo "Invalid role selected";
+            exit; // Stop script execution
+    }
       
-        $result=mysqli_query($con,"select * from $user where email='$_POST[email]'");
-        
+        $result = mysqli_query($con, "select * from $user where email='$_POST[email]'");
+        //echo "Error: " . mysqli_error($con);
         if(mysqli_num_rows($result) == 1)
         {
             while($row=mysqli_fetch_assoc($result))
             {
-                // var_dump($row);
+                //var_dump($row);
                 if(password_verify($_POST['passwd'],$row['passwd']))
                 {
-                $_SESSION['login'] = true;
-                $_SESSION['userid'] = $row['id'];
+                $_SESSION['log_in'] = true;
+                $_SESSION['role'] = $dropDownVal;
+                $_SESSION['user_id'] = $row['id'];
                 $_SESSION['user'] = $row['fullname'];
                 header('location: ../index.html');
+                exit;
                 }
                 else
                 {
@@ -33,7 +43,7 @@ include 'dbconnect.php';
         }   
         else
         {
-                echo "Invalid Credentials";
+                echo "Email not found";
         }
     }
  ?>
@@ -55,11 +65,12 @@ include 'dbconnect.php';
           <div class="div-2">
             <h2>Log In to StudiSol</h2>
           </div>
-          <div class="rdbtn">
-             <h4>Are you a:</h4>
-                  <input type="radio" name="user_type" value="student" onclick="getValue()" required>Student
-                  <input type="radio" name="user_type" value="viewer" onclick="getValue()">Viewer
-                
+          <div class="role">
+            <h4>Are you a:</h4>
+            <select name="role" id="role">
+                <option value="Student">Student</option>
+                <option value="Viewer">Viewer</option>
+            </select>                
           </div>
            <div class="div-3">
             <div class="div-h3">
@@ -87,11 +98,12 @@ include 'dbconnect.php';
               required
             />
           </div>
-          <input type="hidden" name="user_type" id="user_type_hidden" value="">
+          
           <p id="message"></p>
           <div class="div-4">
-            <button id="login" type="submit" >Log In</button>
+            <button id="login" type="submit" name="submit" >Log In</button>
           </div>
+        </form>
           <div class="div-5">
             <h4>Forgot Password?</h4>
           </div>
@@ -105,12 +117,7 @@ include 'dbconnect.php';
           </div>
         </div>
       </div>
-      <script>
-        function getValue(){
-          var radios = document.querySelector('input[name="user_type"]:checked').value;
-          document.getElementById('user_type_hidden').value = userType;
-      }
-</script>
+
       
 </body>
 </html>

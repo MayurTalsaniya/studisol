@@ -293,8 +293,5 @@ if ($uploadOk == 0) {
           </div>
         </div>
       </div>
-
-
-      <script src="../js/register.js"></script>
 </body>
 </html>
