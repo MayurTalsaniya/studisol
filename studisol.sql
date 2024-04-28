@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 17, 2024 at 08:29 PM
+-- Generation Time: Apr 28, 2024 at 08:05 PM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 8.0.3
 
@@ -49,7 +49,7 @@ CREATE TABLE `student_user` (
 --
 
 INSERT INTO `student_user` (`id`, `fullname`, `city`, `enrollment`, `college`, `course`, `branch`, `sem`, `mobile_no`, `email`, `passwd`, `created_at`, `id_img`, `isVerified`) VALUES
-(12, 'Mayur', 'Rajkot', '220043131003', 'B H Gardi', 'BE', 'CSE', '6', '9408124385', 'mayurtalsaniya@hotmail.com', '$2y$10$qqKStKSZP8g5qvmz5qkyJe7OX27O1cpAuzLnseXFjp1f/JeIr/5o2', '2024-04-17 21:39:36', 'C:xampp	mpphp35A1.tmp', 0);
+(1, 'Mayur', 'Rajkot', '220043131003', 'B H Gardi', 'BE', 'CSE', '6', '9408124385', 'mayurtalsaniya@hotmail.com', '$2y$10$qqKStKSZP8g5qvmz5qkyJe7OX27O1cpAuzLnseXFjp1f/JeIr/5o2', '2024-04-17 21:39:36', 'C:xampp	mpphp35A1.tmp', 0);
 
 -- --------------------------------------------------------
 
