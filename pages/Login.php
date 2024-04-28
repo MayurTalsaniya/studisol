@@ -68,7 +68,7 @@ include 'dbconnect.php';
           <div class="role">
             <h4>Are you a:</h4>
             <select name="role" id="role">
-                <option value="Student">Student</option>
+                <option value="Student" required>Student</option>
                 <option value="Viewer">Viewer</option>
             </select>                
           </div>
