@@ -1,5 +1,6 @@
 <?php
-    if (!isset($_SESSION['Log_in'])) 
+session_start();
+    if (!isset($_SESSION['login'])) 
     header('location: pages/Login.php');
 ?>
 <!DOCTYPE html>

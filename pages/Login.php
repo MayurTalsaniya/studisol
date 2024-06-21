@@ -23,16 +23,17 @@ include 'dbconnect.php';
         //echo "Error: " . mysqli_error($con);
         if(mysqli_num_rows($result) == 1)
         {
+
             while($row=mysqli_fetch_assoc($result))
             {
                 //var_dump($row);
                 if(password_verify($_POST['passwd'],$row['passwd']))
                 {
-                $_SESSION['log_in'] = true;
+                $_SESSION['login'] = true;
                 $_SESSION['role'] = $dropDownVal;
                 $_SESSION['user_id'] = $row['id'];
                 $_SESSION['user'] = $row['fullname'];
-                header('location: ../index.html');
+                header('location: ../index.php');
                 exit;
                 }
                 else

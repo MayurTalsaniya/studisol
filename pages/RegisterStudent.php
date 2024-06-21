@@ -50,6 +50,7 @@ elseif($pass != $cpass) {
 }
 else{
 
+
   $hash = password_hash($pass, PASSWORD_BCRYPT);
         $sql = "INSERT INTO student_user (fullname,city,enrollment,college,course,branch,sem,mobile_no,email,passwd)
          VALUES ('$fullname', '$city','$enroll','$college','$course','$branch','$sem','$mobile','$email','$hash')";
@@ -74,7 +75,7 @@ if ($check !== false) {
 }
 
 // Check file size
-if ($_FILES["fileToUpload"]["size"] > 500000) {
+if ($_FILES["fileToUpload"]["size"] > 1000000) { //file size limit 1 MB
     echo "Sorry, your file is too large.";
     $uploadOk = 0;
 }
@@ -93,7 +94,7 @@ if ($uploadOk == 0) {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $targetFile)) {
         echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
         // update the database with the file path of the uploaded photo
-        mysqli_query($con,"UPDATE student_user SET id_img='$filename' where student_user_id='$last_id'") or die(mysqli_error($con));
+        mysqli_query($con,"UPDATE student_user SET id_img='$filename' where id='$last_id'") or die(mysqli_error($con));
         header('location: Login.php');
     } else {
         echo "Sorry, there was an error uploading your file.";
@@ -220,7 +221,7 @@ if ($uploadOk == 0) {
               <h5>Mobile Number :</h5>
             </div>
             <input
-              type="text"
+              type="number"
               class="input"
               placeholder="Mobile number"
               id="mobile"
