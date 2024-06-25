@@ -9,10 +9,10 @@ include 'dbconnect.php';
       $dropDownVal = $_POST["role"];
       switch ($dropDownVal) {
         case "Student":
-            $user = "student_user"; // Replace with actual student table name
+            $user = "student_user";
             break;
         case "Viewer":
-            $user = "user"; // Replace with actual faculty table name
+            $user = "user";
             break;
         default:
             echo "Invalid role selected";

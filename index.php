@@ -165,7 +165,12 @@ if (!isset($_SESSION['login']))
     <nav class="col-lg-3 sticky-sidebar">
       <ul class="nav flex-column">
         <li class="nav-item" >
-          <a class="nav-link sidebar-link" href="#createPostModal" data-toggle="modal" data-target="#createPostModal">Create Post</a>
+          <?php
+          if($_SESSION['role']=="Student")
+          {
+            echo '<a class="nav-link sidebar-link" href="#createPostModal" data-toggle="modal" data-target="#createPostModal">Create Post</a>';
+          }
+          ?>
         </li>
         <li class="nav-item"><a class="nav-link sidebar-link" href="#">Explore</a></li>
         <li class="nav-item"><a class="nav-link sidebar-link" href="#">Notifications</a></li>
