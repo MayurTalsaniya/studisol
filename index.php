@@ -1,7 +1,55 @@
 <?php
-session_start();
-    if (!isset($_SESSION['login'])) 
+include 'pages/dbconnect.php';
+//session_start();
+if (!isset($_SESSION['login'])) 
     header('location: pages/Login.php');
+
+if ($_SERVER["REQUEST_METHOD"] == "POST"){
+    $content = $_POST["postContent"];
+    $image = $_FILES["image"];
+
+   
+
+
+    // Check if file was uploaded without errors
+    if ($image['error'] == 0) {
+        $imageName = basename($image['name']);
+        $imageTmpName = $image['tmp_name'];
+        $imageSize = $image['size'];
+        $imageType = pathinfo($imageName, PATHINFO_EXTENSION);
+        $allowedTypes = array('jpg', 'png', 'jpeg', 'gif');
+
+        if (in_array($imageType, $allowedTypes)) {
+            // Create a unique name for the file
+            $newImageName = uniqid() . "." . $imageType;
+
+            // Define the upload path
+            $uploadPath = 'uploads/' . $newImageName;
+
+            // Move the uploaded file to the destination
+            if (move_uploaded_file($imageTmpName, $uploadPath)) {
+                // Insert data into the database
+                $sql = "INSERT INTO post(content, post_pic) VALUES (?, ?)";
+                $stmt = $con->prepare($sql);
+                $stmt->bind_param("ss", $content, $uploadPath);
+
+                if ($stmt->execute()) {
+                    echo "Post created successfully!";
+                } else {
+                    echo "Error: " . $sql . "<br>" . $conn->error;
+                }
+
+                $stmt->close();
+            } else {
+                echo "Failed to move uploaded file.";
+            }
+        } else {
+            echo "Only JPG, JPEG, PNG & GIF files are allowed.";
+        }
+    } else {
+        echo "File upload error.";
+    }
+  }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -99,7 +147,9 @@ session_start();
   <div class="row">
     <nav class="col-lg-3 sticky-sidebar">
       <ul class="nav flex-column">
-        <li class="nav-item" ><a class="nav-link sidebar-link" href="#">Create Post</a></li>
+        <li class="nav-item" >
+          <a class="nav-link sidebar-link" href="#createPostModal" data-toggle="modal" data-target="#createPostModal">Create Post</a>
+        </li>
         <li class="nav-item"><a class="nav-link sidebar-link" href="#">Explore</a></li>
         <li class="nav-item"><a class="nav-link sidebar-link" href="#">Notifications</a></li>
         <li class="nav-item"><a class="nav-link sidebar-link" href="#">My Account</a></li>
@@ -107,6 +157,11 @@ session_start();
         <li class="nav-item"><a class="nav-link sidebar-link" href="pages/Logout.php" id="logout">Log Out</a></li>
       </ul>
     </nav>
+    
+
+      </div>
+    </div>
+  </div>
     <main role="main" class="col-lg-7 main-content">
   
       <div class="card mb-3">
@@ -172,6 +227,39 @@ session_start();
 </div>
 
 <!-- Bootstrap JS (optional) -->
+ <!-- The Modal -->
+  <div class="modal fade" id="createPostModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Create a New Post</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+          <form id="createPostForm" action="index.php" method="POST" enctype="multipart/form-data">
+            
+            <div class="form-group">
+              <label for="postContent">Content:</label>
+              <textarea class="form-control" id="postContent" name="postContent" rows="5" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="postTitle">Add Image:</label>
+                <input type="file" name="image" id="image">
+            </div>
+          </form>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" form="createPostForm" class="btn btn-primary">Post</button>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <!--script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script-->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
