@@ -4,15 +4,30 @@ include 'pages/dbconnect.php';
 if (!isset($_SESSION['login'])) 
     header('location: pages/Login.php');
 
-if ($_SERVER["REQUEST_METHOD"] == "POST"){
+  if ($_SERVER["REQUEST_METHOD"] == "POST"){
     $content = $_POST["postContent"];
     $image = $_FILES["image"];
 
-   
-
-
     // Check if file was uploaded without errors
-    if ($image['error'] == 0) {
+    if ($image['error'] == UPLOAD_ERR_NO_FILE) {
+        // No file uploaded, insert only content
+        $sql = "INSERT INTO post(content) VALUES(?)";
+        $stmt = $con->prepare($sql);
+        $stmt->bind_param("s", $content);
+        
+        if ($stmt->execute()) {
+            echo "<script>alert('Post created successfully');</script>";
+          }
+        else {
+            echo "<script>alert('Some error occurred');</script>";
+          }
+        $stmt->close();
+    }
+    else{
+    
+    if ($image['error'] == UPLOAD_ERR_OK) {
+      // Check if file was uploaded without errors
+      if ($image['error'] == 0) {
         $imageName = basename($image['name']);
         $imageTmpName = $image['tmp_name'];
         $imageSize = $image['size'];
@@ -34,22 +49,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 $stmt->bind_param("ss", $content, $uploadPath);
 
                 if ($stmt->execute()) {
-                    echo "Post created successfully!";
+                    echo "<script>alert('Post created successfully!');</script>";
                 } else {
-                    echo "Error: " . $sql . "<br>" . $conn->error;
+                    echo "<script>alert('Error: " . $sql . "<br>');</script>" . $con->error;
                 }
 
                 $stmt->close();
             } else {
-                echo "Failed to move uploaded file.";
+                echo "<script>alert('Failed to move uploaded file.');</script>";
             }
         } else {
-            echo "Only JPG, JPEG, PNG & GIF files are allowed.";
+            echo "<script>alert('Only JPG, JPEG, PNG & GIF files are allowed.');</script>";
         }
     } else {
-        echo "File upload error.";
+        echo "<script>alert('File upload error.');</script>";
     }
   }
+}
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -162,54 +179,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
       </div>
     </div>
   </div>
-    <main role="main" class="col-lg-7 main-content">
-  
-      <div class="card mb-3">
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-          <p class="card-text"><small class="text-body-secondary">3 mins ago</small></p>
+       <main role="main" class="container mt-4">
+        <div class="row">
+            <div class="col-lg-7 main-content">
+                <div id="postsContainer">
+                    <?php
+                    $sql = "SELECT content, post_pic, created_at FROM post ORDER BY created_at DESC";
+                    $result = mysqli_query($con, $sql);
+
+                    if ($result) {
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            $content = htmlspecialchars($row['content']);
+                            $postPic = htmlspecialchars($row['post_pic']);
+                            $timestamp = htmlspecialchars($row['created_at']);
+                            $formattedTime = date('F j, Y, g:i a', strtotime($timestamp));
+                            
+                            echo '<div class="card mb-3">';
+                            if (!empty($postPic)) {
+                                echo '<img src="' . $postPic . '" class="card-img-top">';
+                            }
+                            echo '<div class="card-body">';
+                            echo '<h5 class="card-title">Post</h5>';
+                            echo '<p class="card-text">' . $content . '</p>';
+                            echo '<p class="card-text"><small class="text-body-secondary">' . $formattedTime . '</small></p>';
+                            echo '</div>';
+                            echo '</div>';
+                        }
+                    } else {
+                        echo '<p>No posts found.</p>';
+                    }?>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="card mb-3">
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-          <p class="card-text"><small class="text-body-secondary">3 mins ago</small></p>
-        </div>
-      </div>
-      <div class="card mb-3">
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-          <p class="card-text"><small class="text-body-secondary">3 mins ago</small></p>
-        </div>
-      </div>
-      <div class="card mb-3">
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-          <p class="card-text"><small class="text-body-secondary">3 mins ago</small></p>
-        </div>
-      </div>
-      <div class="card mb-3">
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-          <p class="card-text"><small class="text-body-secondary">3 mins ago</small></p>
-        </div>
-      </div>
-      
-      
-      <!-- Add more feed items as needed -->
-    
-  
-      </main>
+    </main>
+
       <div class="container-fluid">
         <div class="row">
       <nav class="col-lg-2 right-sidebar">
@@ -258,8 +261,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <button type="submit" form="createPostForm" class="btn btn-primary">Post</button>
         </div>
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <!--script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script-->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<!--script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script-->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
